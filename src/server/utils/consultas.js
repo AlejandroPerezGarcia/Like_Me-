@@ -5,7 +5,7 @@ import db from '../database/db_connect.js'
 
 export const getPosts = async () => {
   try {
-    const result = await db('SELECT * FROM posts;')
+    const result = await db('SELECT * FROM posts ORDER BY id ASC;')
     return result
   } catch (error) {
     throw new Error(`Error al obtener el posts: ${error.message}`)
@@ -37,4 +37,12 @@ export const agregarPost = async ({ titulo, url, descripcion, likes = 0 }) => {
     console.log(error)
     throw new Error(`Error al guarda el posts: ${error.message}`)
   }
+}
+
+export const actualizarLike = async (id) => {
+  return await db('UPDATE posts SET likes = likes + 1 WHERE id = $1 RETURNING *', [id])
+}
+
+export const eliminarPost = async (id) => {
+  return await db('DELETE FROM posts WHERE id = $1 RETURNING *', [id])
 }

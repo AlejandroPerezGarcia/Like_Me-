@@ -1,6 +1,6 @@
 import express from 'express'
 import cors from 'cors'
-import { getPosts, agregarPost, getPostsId } from '../server/utils/consultas.js'
+import { getPosts, agregarPost, getPostsId, actualizarLike, eliminarPost } from '../server/utils/consultas.js'
 
 const app = express()
 const PORT = process.env.PORT ?? 3000
@@ -36,7 +36,7 @@ app.get('/posts/:id', async (req, res) => {
   }
 })
 
-/* Agrega un nuevo Like me */
+/* Agrega un nuevo Post */
 
 app.post('/posts', async (req, res) => {
   try {
@@ -47,7 +47,29 @@ app.post('/posts', async (req, res) => {
   }
 })
 
-app.delete('/', (req, res) => { })
+/* Agrega un Like */
+
+app.put('/posts/like/:id', async (req, res) => {
+  try {
+    const { id } = req.params
+    await actualizarLike(id)
+    res.status(200).send('like actualizado')
+  } catch (error) {
+    res.status(500).send('Error al actualizar el like')
+  }
+})
+
+/* Elimina un post */
+
+app.delete('/posts/:id', async (req, res) => {
+  try {
+    const { id } = req.params
+    await eliminarPost(id)
+    res.status(200).send('Se elimino correctamente el Post')
+  } catch (error) {
+    res.status(500).send('Error al Eliminar el posts')
+  }
+})
 
 /* Muestra el error cuando no se encuentra la Pagina Web */
 
